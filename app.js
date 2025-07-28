@@ -1,4 +1,4 @@
-// Enhanced REDS PLMT Tracker JavaScript - Fixed Version
+// Enhanced REDS PLMT Tracker JavaScript - Corrected and Integrated Version
 
 // Application configuration and data
 const HABITS_DATA = [
@@ -11,24 +11,35 @@ const HABITS_DATA = [
     { id: "M", name: "Mindfulness (meditation or silence)", xp: 20, category: "wellness", defaultMascot: "tiger" },
     { id: "T", name: "Track finance / journal", xp: 15, category: "productivity", defaultMascot: "dog" }
 ];
+
+// --- Google Sign-In Integration ---
+
+/**
+ * CORRECTED: This function is the callback for the real Google Sign-In.
+ * It now correctly takes the user's data from Google and passes it to our
+ * HabitTracker app to start a user session.
+ */
 function handleCredentialResponse(response) {
-  // The response.credential is a JSON Web Token (JWT) that contains the user's information.
-  // You can decode this token to get the user's profile information.
-  const responsePayload = decodeJwtResponse(response.credential);
+    const responsePayload = decodeJwtResponse(response.credential);
 
-  console.log("ID: " + responsePayload.sub);
-  console.log('Full Name: ' + responsePayload.name);
-  console.log('Given Name: ' + responsePayload.given_name);
-  console.log('Family Name: ' + responsePayload.family_name);
-  console.log("Image URL: " + responsePayload.picture);
-  console.log("Email: " + responsePayload.email);
+    const userData = {
+        id: responsePayload.sub,
+        name: responsePayload.name,
+        email: responsePayload.email,
+        picture: responsePayload.picture
+    };
 
-  // You can now use this information to update your UI, for example:
-  // - Display the user's name and profile picture.
-  // - Hide the sign-in button and show a sign-out button.
-  // - Start tracking habits for the signed-in user.
+    // Use the global 'tracker' instance to sign the user in
+    if (window.tracker) {
+        window.tracker.signInUser(userData);
+    } else {
+        console.error("Tracker not initialized. Cannot sign in.");
+    }
 }
 
+/**
+ * Decodes the JWT token from Google to get user profile information.
+ */
 function decodeJwtResponse(token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -38,18 +49,8 @@ function decodeJwtResponse(token) {
 
     return JSON.parse(jsonPayload);
 };
-// In your handleCredentialResponse function, after a successful sign-in:
-document.getElementById('signout_button').style.display = 'block';
 
-// Add an event listener to your sign-out button
-document.getElementById('signout_button').addEventListener('click', () => {
-  google.accounts.id.disableAutoSelect();
-  // Here you would also clear any user data you have stored in your app
-  // and update the UI to show the user is signed out.
-  console.log('User signed out.');
-  document.getElementById('signout_button').style.display = 'none';
-});
-
+// --- Other Constants ---
 
 const MASCOT_OPTIONS = [
     {id: "owl", name: "Wise Owl", emoji: "🦉", colors: ["#8B4513", "#D2691E", "#F4A460"]},
@@ -94,7 +95,7 @@ class HabitTracker {
         this.isDemo = false;
         this.data = null;
         this.currentEditingHabit = null;
-        
+
         console.log('HabitTracker initialized');
     }
 
@@ -102,9 +103,10 @@ class HabitTracker {
         console.log('Starting initialization...');
         this.checkExistingAuth();
         this.setupEventListeners();
-        
+
         if (this.user) {
             this.showMainApp();
+            this.updateUserProfile(); // Ensure profile is updated on load
         } else {
             this.showLoginScreen();
         }
@@ -112,8 +114,7 @@ class HabitTracker {
 
     setupEventListeners() {
         console.log('Setting up event listeners...');
-        
-        // Demo mode button
+
         const demoBtn = document.getElementById('demo-mode-btn');
         if (demoBtn) {
             demoBtn.addEventListener('click', () => {
@@ -121,17 +122,10 @@ class HabitTracker {
                 this.enterDemoMode();
             });
         }
+        
+        // REMOVED: The mock google sign-in button listener is no longer needed.
+        // The official Google button from your HTML now automatically triggers `handleCredentialResponse`.
 
-        // Google Sign-in button  
-        const googleBtn = document.getElementById('google-signin-button');
-        if (googleBtn) {
-            googleBtn.addEventListener('click', () => {
-                console.log('Google button clicked');
-                this.handleGoogleAuth();
-            });
-        }
-
-        // Sign out button
         const signoutBtn = document.getElementById('signout-btn');
         if (signoutBtn) {
             signoutBtn.addEventListener('click', () => {
@@ -147,29 +141,18 @@ class HabitTracker {
         if (savedData) {
             try {
                 const parsed = JSON.parse(savedData);
-                if (parsed.user) {
+                // Check for a valid user session, not just any saved data
+                if (parsed.user && !parsed.isDemo) {
                     this.user = parsed.user;
-                    this.isDemo = parsed.isDemo || false;
+                    this.isDemo = false;
                     this.data = parsed.data;
-                    console.log('Found existing user session');
+                    console.log('Found existing user session for:', this.user.name);
                 }
             } catch (error) {
                 console.error('Error parsing saved data:', error);
                 localStorage.removeItem('reds-plmt-enhanced-data');
             }
         }
-    }
-
-    handleGoogleAuth() {
-        // Simulate Google Auth
-        const mockUser = {
-            id: 'google-demo-user',
-            name: 'Google User',
-            email: 'google.user@example.com',
-            picture: 'https://via.placeholder.com/32/1FB8CD/FFFFFF?text=GU'
-        };
-        
-        this.signInUser(mockUser);
     }
 
     signInUser(userData) {
@@ -183,7 +166,7 @@ class HabitTracker {
 
     enterDemoMode() {
         console.log('Entering demo mode...');
-        
+
         this.user = {
             id: 'demo-mode',
             name: 'Demo User',
@@ -191,17 +174,24 @@ class HabitTracker {
             picture: 'https://via.placeholder.com/32/1FB8CD/FFFFFF?text=DU'
         };
         this.isDemo = true;
-        
+
         this.loadDemoData();
         this.updateUserProfile();
         this.showMainApp();
     }
 
     signOut() {
+        // CORRECTED: Added the call to Google's library to properly sign out.
+        if (typeof google !== 'undefined' && google.accounts && google.accounts.id) {
+            google.accounts.id.disableAutoSelect();
+            console.log("Google account auto-select disabled.");
+        }
+
         this.user = null;
         this.isDemo = false;
         this.data = null;
         localStorage.removeItem('reds-plmt-enhanced-data');
+        console.log("User signed out and local data cleared.");
         this.showLoginScreen();
     }
 
@@ -215,7 +205,7 @@ class HabitTracker {
         console.log('Showing main app');
         document.getElementById('login-screen')?.classList.add('hidden');
         document.getElementById('main-app')?.classList.remove('hidden');
-        
+
         // Initialize main app views
         this.renderDashboard();
         this.renderProgressView();
@@ -226,11 +216,17 @@ class HabitTracker {
     updateUserProfile() {
         const nameElement = document.getElementById('user-name');
         const avatarElement = document.getElementById('user-avatar');
-        
-        if (nameElement && this.user) nameElement.textContent = this.user.name;
-        if (avatarElement && this.user) {
-            avatarElement.src = this.user.picture;
-            avatarElement.alt = this.user.name;
+        const signoutBtn = document.getElementById('signout-btn');
+
+        if (this.user) {
+            if (nameElement) nameElement.textContent = this.user.name;
+            if (avatarElement) {
+                avatarElement.src = this.user.picture;
+                avatarElement.alt = this.user.name;
+            }
+            if(signoutBtn) signoutBtn.style.display = 'block';
+        } else {
+            if(signoutBtn) signoutBtn.style.display = 'none';
         }
     }
 
@@ -239,12 +235,17 @@ class HabitTracker {
             this.loadDemoData();
             return;
         }
-        
+
         const savedData = localStorage.getItem('reds-plmt-enhanced-data');
         if (savedData) {
             try {
                 const parsed = JSON.parse(savedData);
-                this.data = parsed.data || this.createDefaultData();
+                // Ensure we are loading data for the correct user
+                if (parsed.user && parsed.user.id === this.user.id) {
+                    this.data = parsed.data || this.createDefaultData();
+                } else {
+                    this.data = this.createDefaultData();
+                }
             } catch (error) {
                 console.error('Error loading data:', error);
                 this.data = this.createDefaultData();
@@ -252,6 +253,7 @@ class HabitTracker {
         } else {
             this.data = this.createDefaultData();
         }
+        this.saveData(); // Save initial data for new user
     }
 
     loadDemoData() {
@@ -266,7 +268,7 @@ class HabitTracker {
             reflections: {},
             mascotPreferences: {
                 "R": {mascot: "owl", color: "#8B4513", name: "Hooty"},
-                "E": {mascot: "bear", color: "#8B4513", name: "Brutus"}, 
+                "E": {mascot: "bear", color: "#8B4513", name: "Brutus"},
                 "D": {mascot: "fox", color: "#FF6347", name: "Foxy"},
                 "S": {mascot: "cat", color: "#708090", name: "Sleepy"},
                 "P": {mascot: "rabbit", color: "#FFB6C1", name: "Planner"},
@@ -281,18 +283,18 @@ class HabitTracker {
     generateSampleCompletions() {
         const completions = {};
         const today = new Date();
-        
+
         for (let i = 0; i < 30; i++) {
             const date = new Date(today);
             date.setDate(today.getDate() - i);
             const dateStr = date.toISOString().split('T')[0];
-            
+
             const completed = HABITS_DATA.filter(() => Math.random() > 0.3).map(h => h.id);
             if (completed.length > 0) {
                 completions[dateStr] = completed;
             }
         }
-        
+
         return completions;
     }
 
@@ -319,7 +321,7 @@ class HabitTracker {
     }
 
     saveData() {
-        if (!this.data) return;
+        if (!this.data || this.isDemo) return;
 
         const savePayload = {
             user: this.user,
@@ -327,7 +329,7 @@ class HabitTracker {
             data: this.data,
             lastSyncTime: new Date().toISOString()
         };
-        
+
         localStorage.setItem('reds-plmt-enhanced-data', JSON.stringify(savePayload));
     }
 
@@ -339,10 +341,10 @@ class HabitTracker {
             tab.addEventListener('click', (e) => {
                 e.preventDefault();
                 const targetView = tab.dataset.tab;
-                
+
                 tabs.forEach(t => t.classList.remove('active'));
                 views.forEach(v => v.classList.remove('active'));
-                
+
                 tab.classList.add('active');
                 document.getElementById(`${targetView}-view`)?.classList.add('active');
 
@@ -358,7 +360,7 @@ class HabitTracker {
 
     renderDashboard() {
         if (!this.data) return;
-        
+
         this.updateDashboardStats();
         this.updateLevelProgress();
         this.renderMascots();
@@ -491,7 +493,7 @@ class HabitTracker {
             if (progressPercent === 100) message = '🎉 Perfect day achieved!';
             else if (progressPercent >= 75) message = 'Almost there! Keep going!';
             else if (progressPercent >= 50) message = 'Good progress so far!';
-            
+
             messageElement.textContent = message;
         }
     }
@@ -502,7 +504,7 @@ class HabitTracker {
         if (!this.data.completions[this.currentDate]) {
             this.data.completions[this.currentDate] = [];
         }
-        
+
         const todayCompletions = this.data.completions[this.currentDate];
         const habitIndex = todayCompletions.indexOf(habitId);
         const habit = this.data.habits.find(h => h.id === habitId);
@@ -525,13 +527,13 @@ class HabitTracker {
         }
 
         this.updateComboStreak();
-        
+
         const newLevel = Math.floor(Math.sqrt(this.data.totalXP / 100)) + 1;
         if (newLevel > previousLevel) {
             this.data.level = newLevel;
             setTimeout(() => this.showLevelUpModal(newLevel), 500);
         }
-        
+
         this.saveData();
         this.renderDashboard();
         this.checkBadges();
@@ -540,20 +542,20 @@ class HabitTracker {
     updateComboStreak() {
         const today = new Date(this.currentDate);
         let streak = 0;
-        
+
         for (let i = 0; i < 365; i++) {
             const checkDate = new Date(today);
             checkDate.setDate(today.getDate() - i);
             const dateStr = checkDate.toISOString().split('T')[0];
             const completions = this.data.completions[dateStr] || [];
-            
+
             if (completions.length === this.data.habits.length) {
                 streak++;
             } else {
                 break;
             }
         }
-        
+
         this.data.comboStreak = streak;
     }
 
@@ -562,15 +564,15 @@ class HabitTracker {
         const mascotElement = document.getElementById('celebrating-mascot');
         const titleElement = document.getElementById('habit-complete-title');
         const messageElement = document.getElementById('habit-complete-message');
-        
+
         if (modal && mascotElement && titleElement && messageElement) {
             const mascotPref = this.data.mascotPreferences[habit.id];
             const mascotData = MASCOT_OPTIONS.find(m => m.id === mascotPref.mascot);
-            
+
             mascotElement.textContent = mascotData?.emoji || '🎉';
             titleElement.textContent = `${mascotPref.name} is celebrating!`;
             messageElement.textContent = `You completed "${habit.name}" and earned ${habit.xp} XP!`;
-            
+
             modal.classList.add('active');
             setTimeout(() => modal.classList.remove('active'), 2000);
         }
@@ -579,7 +581,7 @@ class HabitTracker {
     showLevelUpModal(level) {
         const modal = document.getElementById('level-up-modal');
         const levelElement = document.getElementById('new-level');
-        
+
         if (modal && levelElement) {
             levelElement.textContent = level;
             modal.classList.add('active');
@@ -612,7 +614,7 @@ class HabitTracker {
     showBadgeNotification(badge) {
         const notification = document.createElement('div');
         notification.innerHTML = `
-            <div style="position: fixed; top: 20px; right: 20px; background: #4ade80; color: white; 
+            <div style="position: fixed; top: 20px; right: 20px; background: #4ade80; color: white;
                         padding: 16px 20px; border-radius: 8px; z-index: 1001; max-width: 300px;
                         box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
                 <div style="font-weight: bold; margin-bottom: 4px;">🎉 Badge Earned!</div>
@@ -628,7 +630,7 @@ class HabitTracker {
 
     renderProgressView() {
         if (!this.data) return;
-        
+
         this.updateProgressStats();
         this.updateWeeklyBoss();
         this.renderStreaks();
@@ -654,14 +656,14 @@ class HabitTracker {
         const today = new Date();
         const thisWeekStart = new Date(today);
         thisWeekStart.setDate(today.getDate() - today.getDay());
-        
+
         let daysCompleted = 0;
         for (let i = 0; i < 7; i++) {
             const checkDate = new Date(thisWeekStart);
             checkDate.setDate(thisWeekStart.getDate() + i);
             const dateStr = checkDate.toISOString().split('T')[0];
             const completions = this.data.completions[dateStr] || [];
-            
+
             if (completions.length === this.data.habits.length) {
                 daysCompleted++;
             }
@@ -675,14 +677,14 @@ class HabitTracker {
         const today = new Date();
         const thisWeekStart = new Date(today);
         thisWeekStart.setDate(today.getDate() - today.getDay());
-        
+
         let daysCompleted = 0;
         for (let i = 0; i < 7; i++) {
             const checkDate = new Date(thisWeekStart);
             checkDate.setDate(thisWeekStart.getDate() + i);
             const dateStr = checkDate.toISOString().split('T')[0];
             const completions = this.data.completions[dateStr] || [];
-            
+
             if (completions.length === this.data.habits.length) {
                 daysCompleted++;
             }
@@ -690,7 +692,7 @@ class HabitTracker {
 
         const progressElement = document.getElementById('boss-progress-fill');
         const statusElement = document.getElementById('boss-status');
-        
+
         if (progressElement) {
             progressElement.style.width = `${Math.min((daysCompleted / 5) * 100, 100)}%`;
         }
@@ -707,7 +709,7 @@ class HabitTracker {
     renderStreaks() {
         const container = document.getElementById('streaks-container');
         if (!container || !this.data) return;
-        
+
         const streaksHTML = this.data.habits.map(habit => `
             <div class="streak-card">
                 <h4>${habit.id}</h4>
@@ -728,7 +730,7 @@ class HabitTracker {
     renderBadges() {
         const container = document.getElementById('badges-container');
         if (!container || !this.data) return;
-        
+
         container.innerHTML = BADGES.map(badge => `
             <div class="badge ${this.data.badges.includes(badge.id) ? 'earned' : ''}" title="${badge.description}">
                 <div class="badge-icon">${badge.icon}</div>
@@ -745,7 +747,7 @@ class HabitTracker {
     renderReflectionQuestions() {
         const container = document.getElementById('reflection-form');
         if (!container) return;
-        
+
         container.innerHTML = REFLECTION_QUESTIONS.map((question, index) => `
             <div class="question-item">
                 <label>${question}</label>
@@ -760,9 +762,10 @@ class HabitTracker {
     }
 
     renderWeeklyInsights() {
+        // This is a placeholder. A real implementation would calculate this data.
         const elements = {
             'most-consistent-habit': 'Reading',
-            'needs-attention-habit': 'Exercise', 
+            'needs-attention-habit': 'Exercise',
             'best-day': 'Monday'
         };
 
@@ -784,11 +787,11 @@ class HabitTracker {
     renderMascotCustomization() {
         const container = document.getElementById('mascot-customization');
         if (!container || !this.data) return;
-        
+
         container.innerHTML = this.data.habits.map(habit => {
             const mascotPref = this.data.mascotPreferences[habit.id];
             const mascotData = MASCOT_OPTIONS.find(m => m.id === mascotPref.mascot);
-            
+
             return `
                 <div class="mascot-custom-item">
                     <div class="mascot-custom-info">
@@ -812,19 +815,19 @@ class HabitTracker {
         const modal = document.getElementById('mascot-selector-modal');
         const title = document.getElementById('mascot-selector-title');
         const optionsContainer = document.getElementById('mascot-options');
-        
+
         if (!modal || !this.data) return;
 
         const habit = this.data.habits.find(h => h.id === habitId);
         const currentPref = this.data.mascotPreferences[habitId];
-        
+
         this.currentEditingHabit = habitId;
-        
+
         if (title) title.textContent = `Choose Mascot for ${habit.name}`;
-        
+
         if (optionsContainer) {
             optionsContainer.innerHTML = MASCOT_OPTIONS.map(mascot => `
-                <div class="mascot-option ${mascot.id === currentPref.mascot ? 'selected' : ''}" 
+                <div class="mascot-option ${mascot.id === currentPref.mascot ? 'selected' : ''}"
                      data-mascot-id="${mascot.id}">
                     ${mascot.emoji}
                 </div>
@@ -838,10 +841,10 @@ class HabitTracker {
                 });
             });
         }
-        
+
         const nameInput = document.getElementById('mascot-name-input');
         if (nameInput) nameInput.value = currentPref.name;
-        
+
         this.updateColorOptions(currentPref.mascot);
         modal.classList.add('active');
     }
@@ -849,15 +852,15 @@ class HabitTracker {
     updateColorOptions(mascotId) {
         const colorsContainer = document.getElementById('color-options');
         const currentPref = this.data.mascotPreferences[this.currentEditingHabit];
-        
+
         if (!colorsContainer) return;
-        
+
         const mascotData = MASCOT_OPTIONS.find(m => m.id === mascotId);
         if (!mascotData) return;
-        
+
         colorsContainer.innerHTML = mascotData.colors.map(color => `
-            <div class="color-option ${color === currentPref?.color ? 'selected' : ''}" 
-                 style="background-color: ${color}" 
+            <div class="color-option ${color === currentPref?.color ? 'selected' : ''}"
+                 style="background-color: ${color}"
                  data-color="${color}">
             </div>
         `).join('');
@@ -873,25 +876,25 @@ class HabitTracker {
     saveMascotSelection() {
         const habitId = this.currentEditingHabit;
         if (!habitId || !this.data) return;
-        
+
         const selectedMascot = document.querySelector('.mascot-option.selected')?.dataset.mascotId;
         const selectedColor = document.querySelector('.color-option.selected')?.dataset.color;
         const nameInput = document.getElementById('mascot-name-input');
         const name = nameInput?.value || 'Mascot';
-        
+
         if (selectedMascot && selectedColor) {
             this.data.mascotPreferences[habitId] = {
                 mascot: selectedMascot,
                 color: selectedColor,
                 name: name
             };
-            
+
             this.saveData();
             this.renderSettingsView();
             this.renderDashboard();
             this.showNotification('Mascot customized successfully!', 'success');
         }
-        
+
         this.closeMascotSelector();
     }
 
@@ -938,7 +941,7 @@ class HabitTracker {
         a.download = filename;
         a.click();
         URL.revokeObjectURL(url);
-        
+
         this.showNotification(`Data exported as ${format.toUpperCase()}!`, 'success');
     }
 
@@ -949,16 +952,16 @@ class HabitTracker {
         Object.keys(this.data.completions).sort().forEach(date => {
             const completions = this.data.completions[date];
             const row = [date];
-            
+
             this.data.habits.forEach(habit => {
                 row.push(completions.includes(habit.id) ? '✓' : '');
             });
-            
+
             const dailyXP = completions.reduce((sum, habitId) => {
                 const habit = this.data.habits.find(h => h.id === habitId);
                 return sum + (habit ? habit.xp : 0);
             }, 0);
-            
+
             row.push(dailyXP);
             rows.push(row);
         });
@@ -973,20 +976,20 @@ class HabitTracker {
             error: '#ef4444',
             info: '#5bb8cc'
         };
-        
+
         notification.style.cssText = `
             position: fixed; top: 20px; right: 20px; padding: 16px 20px; border-radius: 8px;
             color: white; z-index: 1001; max-width: 300px; font-weight: 500;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15); background: ${colors[type]};
         `;
-        
+
         notification.textContent = message;
         document.body.appendChild(notification);
         setTimeout(() => notification.remove(), 4000);
     }
 }
 
-// Global modal functions
+// Global modal functions for HTML onclick attributes
 function closeLevelUpModal() {
     document.getElementById('level-up-modal')?.classList.remove('active');
 }
@@ -1007,6 +1010,6 @@ function saveMascotSelection() {
 document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM loaded, initializing tracker...');
     tracker = new HabitTracker();
-    window.tracker = tracker; // Make globally available
+    window.tracker = tracker; // Make globally available for callbacks
     tracker.init();
 });
