@@ -11,6 +11,45 @@ const HABITS_DATA = [
     { id: "M", name: "Mindfulness (meditation or silence)", xp: 20, category: "wellness", defaultMascot: "tiger" },
     { id: "T", name: "Track finance / journal", xp: 15, category: "productivity", defaultMascot: "dog" }
 ];
+function handleCredentialResponse(response) {
+  // The response.credential is a JSON Web Token (JWT) that contains the user's information.
+  // You can decode this token to get the user's profile information.
+  const responsePayload = decodeJwtResponse(response.credential);
+
+  console.log("ID: " + responsePayload.sub);
+  console.log('Full Name: ' + responsePayload.name);
+  console.log('Given Name: ' + responsePayload.given_name);
+  console.log('Family Name: ' + responsePayload.family_name);
+  console.log("Image URL: " + responsePayload.picture);
+  console.log("Email: " + responsePayload.email);
+
+  // You can now use this information to update your UI, for example:
+  // - Display the user's name and profile picture.
+  // - Hide the sign-in button and show a sign-out button.
+  // - Start tracking habits for the signed-in user.
+}
+
+function decodeJwtResponse(token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+};
+// In your handleCredentialResponse function, after a successful sign-in:
+document.getElementById('signout_button').style.display = 'block';
+
+// Add an event listener to your sign-out button
+document.getElementById('signout_button').addEventListener('click', () => {
+  google.accounts.id.disableAutoSelect();
+  // Here you would also clear any user data you have stored in your app
+  // and update the UI to show the user is signed out.
+  console.log('User signed out.');
+  document.getElementById('signout_button').style.display = 'none';
+});
+
 
 const MASCOT_OPTIONS = [
     {id: "owl", name: "Wise Owl", emoji: "🦉", colors: ["#8B4513", "#D2691E", "#F4A460"]},
