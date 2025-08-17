@@ -560,6 +560,42 @@ class HabitPalsApp {
                 if (e.target === modal) this.hideModal(modal.id);
             });
         });
+// Event delegation for dynamic settings content
+const settingsView = document.getElementById('settings-view');
+if (settingsView) {
+    settingsView.addEventListener('click', (e) => {
+        const action = e.target.dataset.action;
+        const id = e.target.dataset.id;
+        if (!action || !id) return;
+
+        switch (action) {
+            case 'edit-habit':
+                this.editHabit(id);
+                break;
+            case 'delete-habit':
+                this.deleteHabit(id);
+                break;
+            case 'change-mascot':
+                this.openMascotSelection(id);
+                break;
+            case 'test-mascot-sound':
+                this.playMascotSound(id);
+                break;
+        }
+    });
+
+    settingsView.addEventListener('change', (e) => {
+        const action = e.target.dataset.action;
+        const id = e.target.dataset.id;
+        if (action === 'select-sound') {
+            const mascotId = id;
+            const soundId = e.target.value;
+            this.userData.mascots[mascotId].selectedSound = soundId;
+            this.saveUserData();
+            this.showMessage(`${this.userData.mascots[mascotId].name}'s sound updated!`, 'success');
+        }
+    });
+}
 
         console.log('Event listeners setup complete');
     }
@@ -1467,12 +1503,88 @@ class HabitPalsApp {
     }
 
     renderHabitsAndMascots() {
-        // Placeholder for habits and mascots rendering
-    }
+    const habitsManagementContainer = document.getElementById('habits-management');
+    const mascotSettingsContainer = document.getElementById('mascot-settings');
 
-    renderSoundSettings() {
-        // Placeholder for sound settings
-    }
+    if (!habitsManagementContainer || !mascotSettingsContainer) return;
+
+    let habitsHtml = '';
+    let mascotsHtml = '';
+
+    Object.values(this.userData.habits).forEach(habit => {
+        const mascot = this.userData.mascots[habit.mascot] || {};
+        const mascotEmoji = mascot.emotions ? mascot.emotions.neutral : '❓';
+
+        // HTML for the habit management list
+        habitsHtml += `
+            <div class="habit-management-item">
+                <div class="habit-management-info">
+                    <span class="habit-stats-mascot">${mascotEmoji}</span>
+                    <div class="habit-management-details">
+                        <span class="habit-management-name">${habit.name}</span>
+                        <span class="habit-management-meta">Category: ${habit.category} | XP: ${habit.xp}</span>
+                    </div>
+                </div>
+                <div class="habit-management-actions">
+                    <button class="btn btn--sm btn--outline" data-action="edit-habit" data-id="${habit.id}">Edit</button>
+                    <button class="btn btn--sm btn--outline" data-action="delete-habit" data-id="${habit.id}">Delete</button>
+                </div>
+            </div>
+        `;
+
+        // HTML for the mascot settings list
+        mascotsHtml += `
+            <div class="mascot-setting-item">
+                <div class="mascot-setting-info">
+                    <span class="mascot-setting-emoji">${mascotEmoji}</span>
+                    <div class="mascot-setting-details">
+                        <span class="mascot-habit-name">${habit.name}</span>
+                        <span class="mascot-current-name">Companion: ${mascot.name || 'Unknown'}</span>
+                    </div>
+                </div>
+                <button class="btn btn--sm btn--secondary" data-action="change-mascot" data-id="${habit.id}">Change Mascot</button>
+            </div>
+        `;
+    });
+
+    habitsManagementContainer.innerHTML = habitsHtml || '<p>No habits found. Add one above!</p>';
+    mascotSettingsContainer.innerHTML = mascotsHtml || '<p>No mascots to configure.</p>';
+}
+
+   renderSoundSettings() {
+    const container = document.getElementById('mascot-sounds');
+    if (!container) return;
+
+    let soundSettingsHtml = '';
+    const allSounds = [...SOUND_OPTIONS, ...this.customSounds];
+
+    Object.values(this.userData.mascots).forEach(mascot => {
+        const mascotEmoji = mascot.emotions ? mascot.emotions.neutral : '❓';
+        let optionsHtml = '';
+
+        allSounds.forEach(sound => {
+            const isSelected = mascot.selectedSound === sound.id;
+            optionsHtml += `<option value="${sound.id}" ${isSelected ? 'selected' : ''}>${sound.name}</option>`;
+        });
+
+        soundSettingsHtml += `
+            <div class="mascot-sound-item">
+                <div class="mascot-sound-info">
+                    <span class="mascot-sound-emoji">${mascotEmoji}</span>
+                    <span>${mascot.name}</span>
+                </div>
+                <div class="mascot-sound-controls">
+                    <select class="form-control sound-select" data-action="select-sound" data-id="${mascot.id}">
+                        ${optionsHtml}
+                    </select>
+                    <button class="btn btn--sm btn--outline" data-action="test-mascot-sound" data-id="${mascot.id}">Test</button>
+                </div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = soundSettingsHtml || '<p>No mascots available for sound customization.</p>';
+}
 
     updatePreferences() {
         // Placeholder for preferences update
@@ -1555,13 +1667,32 @@ class HabitPalsApp {
         this.showMessage('Mascot selection coming soon! 🎭', 'info');
     }
 
-    editHabit(habitId) {
-        this.showMessage('Edit habit functionality coming soon! ✏️', 'info');
-    }
+editHabit(habitId) {
+    const habit = this.userData.habits[habitId];
+    if (!habit) return;
 
-    deleteHabit(habitId) {
-        this.showMessage('Delete habit functionality coming soon! 🗑️', 'info');
+    const newName = prompt('Enter a new name for this habit:', habit.name);
+    if (newName && newName.trim() !== '') {
+        habit.name = newName.trim();
+        this.saveUserData();
+        this.renderHabitsAndMascots();
+        this.renderDashboard();
+        this.showMessage('Habit updated successfully!', 'success');
     }
+}
+
+   deleteHabit(habitId) {
+    const habit = this.userData.habits[habitId];
+    if (!habit) return;
+
+    if (confirm(`Are you sure you want to delete the habit "${habit.name}"? This cannot be undone.`)) {
+        delete this.userData.habits[habitId];
+        this.saveUserData();
+        this.renderHabitsAndMascots();
+        this.renderDashboard();
+        this.showMessage('Habit deleted successfully!', 'success');
+    }
+}
 
     showMessage(message, type = 'info') {
         try {
