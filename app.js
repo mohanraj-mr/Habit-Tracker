@@ -148,8 +148,8 @@ const HABITPALS_FAQ_DATA = [
 
 // Google API Configuration
 const GOOGLE_CONFIG = {
-    clientId: 'your-google-client-id.apps.googleusercontent.com',
-    apiKey: 'your-google-api-key',
+    clientId: '801956053270-oqv3c9t49cl3qaeh67q0ltnekli0nu1t.apps.googleusercontent.com',
+    apiKey: 'AIzaSyDjxQqGjFZnM7g9hPz4AZUiz8qvxEm6S94',
     scopes: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile',
     discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/drive/v3/rest']
 };
