@@ -217,24 +217,9 @@ class HabitPalsApp {
 
     // Google Integration Methods
     initializeGoogleSignIn() {
-        try {
-            if (typeof google !== 'undefined' && google.accounts) {
-                google.accounts.id.initialize({
-                    client_id: GOOGLE_CONFIG.clientId,
-                    callback: (response) => this.handleCredentialResponse(response)
-                });
-
-                const signInButton = document.getElementById('google-signin-button');
-                if (signInButton) {
-                    google.accounts.id.renderButton(signInButton, {
-                        theme: 'outline',
-                        size: 'large',
-                        text: 'signin_with',
-                        shape: 'rectangular',
-                        width: 280
-                    });
-                }
-            } else {
+           console.log("Google One Tap initialized with auto button in HTML.");
+}
+ else {
                 console.log('Google Sign-In not available - setting up demo mode');
                 this.setupDemoGoogleButton();
             }
@@ -1632,10 +1617,20 @@ if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         console.log('DOM loaded, initializing HabitPals...');
         app = new HabitPalsApp();
+        // Make Google callback globally accessible
+window.handleCredentialResponse = (response) => {
+    habitPalsApp.handleCredentialResponse(response);
+};
+
         app.init();
     });
 } else {
     console.log('DOM already loaded, initializing HabitPals...');
     app = new HabitPalsApp();
+    // Make Google callback globally accessible
+window.handleCredentialResponse = (response) => {
+    habitPalsApp.handleCredentialResponse(response);
+};
+
     app.init();
 }
