@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>REDS PLMT Tracker - Enhanced</title>
+    <title>HabitPals - Your Personal Habit Companion with Heart</title>
     <link rel="stylesheet" href="style.css">
+    <meta name="description" content="HabitPals - Your Habits, Your Companions, Your Journey. The first habit tracker with emotionally intelligent mascot companions">
+    <meta name="keywords" content="habit tracker, emotional mascots, habit formation, personal development, HabitPals">
     
+    <!-- Google Sign-In -->
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
-    <script type="module">
+     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
         import { getFirestore } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
         import { getAuth } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js';
@@ -29,35 +31,30 @@ const firebaseConfig = {
         window.firebaseDB = getFirestore(window.firebaseApp);
         window.firebaseAuth = getAuth(window.firebaseApp);
     </script>
+
 </head>
 <body>
-    <div class="app-container">
-        <div id="login-screen" class="login-screen">
-            <div class="login-container">
-                <div class="login-header">
-                    <div class="app-logo">
-                        <span class="logo-icon">🦉</span>
-                        <h1>REDS PLMT</h1>
-                    </div>
-                    <p class="login-subtitle">Your gamified habit tracker</p>
+    <!-- Welcome Screen with Google Integration -->
+    <div id="welcome-screen" class="welcome-screen">
+        <div class="welcome-content">
+            <div class="welcome-header">
+                <h1 class="welcome-title">🎭 HabitPals</h1>
+                <p class="welcome-tagline">Your Habits, Your Companions, Your Journey</p>
+                <p class="welcome-subtitle">Your Personal Habit Companion with Heart</p>
+            </div>
+            
+            <div class="mascot-preview">
+                <div class="mascot-carousel">
+                    <div class="mascot-item">🎉🦉 <span>Celebrating Owl</span></div>
+                    <div class="mascot-item">🔥🦊 <span>Excited Fox</span></div>
+                    <div class="mascot-item">😴🐱 <span>Sleepy Cat</span></div>
+                    <div class="mascot-item">💪🐕 <span>Strong Dog</span></div>
                 </div>
-                
-                <div class="login-content">
-                    <div class="mascot-preview">
-                        <div class="mascot-grid">
-                            <span class="mascot-mini">🦉</span>
-                            <span class="mascot-mini">🐻</span>
-                            <span class="mascot-mini">🦊</span>
-                            <span class="mascot-mini">🐱</span>
-                            <span class="mascot-mini">🐰</span>
-                            <span class="mascot-mini">🐼</span>
-                            <span class="mascot-mini">🐯</span>
-                            <span class="mascot-mini">🐕</span>
-                        </div>
-                        <p>Meet your habit mascots!</p>
-                    </div>
-
-                    <div id="g_id_onload"
+                <p class="preview-description">Where Habits Meet Hearts - Experience emotionally intelligent companions that celebrate your growth!</p>
+            </div>
+            
+            <div class="welcome-actions">
+<div id="g_id_onload"
                          data-client_id="801956053270-oqv3c9t49cl3qaeh67q0ltnekli0nu1t.apps.googleusercontent.com"
                          data-callback="handleCredentialResponse">
                     </div>
@@ -69,329 +66,697 @@ const firebaseConfig = {
                          data-shape="rectangular"
                          data-logo_alignment="left">
                     </div>
-                    
-                    <div class="auth-section">
-                        <div class="demo-mode">
-                            <button id="demo-mode-btn" class="btn btn--outline">Try Demo Mode</button>
-                            <p class="demo-note">Continue without an account (data is temporary)</p>
-                        </div>
-                    </div>
+
+            
+                    <p class="signin-description">Sign in with Google to sync your habits and access your HabitPals across devices</p>
                 </div>
+                
+                <div class="divider">
+                    <span>or</span>
+                </div>
+                
+                <button id="demo-mode" class="btn btn--secondary btn--lg">
+                    <span>🎮 Try Demo Mode</span>
+                </button>
+                <p class="demo-note">No account needed - explore HabitPals with sample data</p>
             </div>
+            
+            
         </div>
-        <!-- Main Application -->
-        <div id="main-app" class="main-app hidden">
-            <!-- Navigation -->
-            <nav class="nav-bar">
+    </div>
+
+    <!-- Main Application -->
+    <div id="main-app" class="main-app hidden">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-container">
                 <div class="nav-brand">
-                    <span class="mascot-icon">🦉</span>
-                    <h1>REDS PLMT</h1>
+                    <h2>🎭 HabitPals</h2>
+                    <p class="nav-tagline">Every Habit Has a Heart</p>
                 </div>
-                <div class="nav-center">
-                    <div class="nav-tabs">
-                        <button class="nav-tab active" data-tab="dashboard">Dashboard</button>
-                        <button class="nav-tab" data-tab="progress">Progress</button>
-                        <button class="nav-tab" data-tab="reflection">Reflection</button>
-                        <button class="nav-tab" data-tab="settings">Settings</button>
-                    </div>
+                <div class="nav-menu">
+                    <button class="nav-btn active" data-view="dashboard">
+                        <span class="nav-icon">🏠</span>
+                        <span class="nav-label">Dashboard</span>
+                    </button>
+                    <button class="nav-btn" data-view="progress">
+                        <span class="nav-icon">📊</span>
+                        <span class="nav-label">Progress</span>
+                    </button>
+                    <button class="nav-btn" data-view="reflection">
+                        <span class="nav-icon">🤔</span>
+                        <span class="nav-label">Reflection</span>
+                    </button>
+                    <button class="nav-btn" data-view="support">
+                        <span class="nav-icon">💝</span>
+                        <span class="nav-label">Support</span>
+                    </button>
+                    <button class="nav-btn" data-view="settings">
+                        <span class="nav-icon">⚙️</span>
+                        <span class="nav-label">Settings</span>
+                    </button>
                 </div>
                 <div class="nav-user">
                     <div class="user-info">
-                        <img id="user-avatar" class="user-avatar" src="" alt="User Avatar">
-                        <span id="user-name" class="user-name">User</span>
-                    </div>
-                    <button id="signout-btn" class="btn btn--sm btn--outline">Sign Out</button>
-                </div>
-            </nav>
-
-            <!-- Dashboard View -->
-            <div id="dashboard-view" class="view active">
-                <div class="dashboard-header">
-                    <div class="user-stats">
-                        <div class="stat-card">
-                            <span class="stat-label">Level</span>
-                            <span id="current-level" class="stat-value">1</span>
-                        </div>
-                        <div class="stat-card">
-                            <span class="stat-label">Total XP</span>
-                            <span id="total-xp" class="stat-value">0</span>
-                        </div>
-                        <div class="stat-card">
-                            <span class="stat-label">Streak</span>
-                            <span id="combo-streak" class="stat-value">0</span>
-                        </div>
-                    </div>
-                    <div class="level-progress">
-                        <div class="level-info">
-                            <span>Level <span id="level-display">1</span></span>
-                            <span><span id="current-xp">0</span> / <span id="next-level-xp">100</span> XP</span>
-                        </div>
-                        <div class="progress-bar">
-                            <div id="xp-progress" class="progress-fill"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mascots-section">
-                    <h2>Your Habit Mascots</h2>
-                    <p class="mascots-subtitle">Each habit has its own mascot that reacts to your progress!</p>
-                    <div id="mascots-grid" class="mascots-grid">
-                        <!-- Mascots will be populated by JavaScript -->
-                    </div>
-                </div>
-
-                <div class="today-summary">
-                    <div class="summary-card">
-                        <h3>Today's Progress</h3>
-                        <div class="progress-ring">
-                            <svg class="progress-svg" viewBox="0 0 36 36">
-                                <circle cx="18" cy="18" r="16" fill="none" stroke="var(--color-secondary)" stroke-width="2"></circle>
-                                <circle id="progress-circle" cx="18" cy="18" r="16" fill="none" stroke="var(--app-primary)" stroke-width="2" 
-                                        stroke-dasharray="100 0" stroke-linecap="round" transform="rotate(-90 18 18)"></circle>
-                            </svg>
-                            <div class="progress-text">
-                                <span id="completed-today">0</span>/<span id="total-habits">8</span>
+                        <div id="google-user-profile" class="google-user-profile hidden">
+                            <img id="user-avatar" class="user-avatar" src="" alt="User">
+                            <div class="user-details">
+                                <span id="user-name" class="user-name"></span>
+                                <span class="user-level">Level <span id="user-level">1</span></span>
                             </div>
+                            <button id="sign-out-btn" class="btn btn--outline btn--sm">Sign Out</button>
                         </div>
-                        <p id="progress-message" class="progress-message">Great start to the day!</p>
+                        <div id="demo-user-info" class="demo-user-info">
+                            <span class="user-level">Level <span id="demo-user-level">1</span></span>
+                        </div>
+                        <div class="theme-toggle" id="theme-toggle" title="Toggle theme">🌙</div>
                     </div>
                 </div>
             </div>
+        </nav>
 
-            <!-- Progress View -->
-            <div id="progress-view" class="view">
-                <div class="progress-header">
-                    <h2>Your Progress Journey</h2>
+        <!-- Dashboard View -->
+        <div id="dashboard-view" class="view active">
+            <div class="container">
+                <!-- Welcome Message -->
+                <div class="dashboard-welcome">
+                    <h3>Welcome to HabitPals!</h3>
+                    <p>Your emotional companions are here to support your journey. Click on them to complete habits and watch their emotions respond to your progress!</p>
                 </div>
-                
-                <div class="progress-overview">
-                    <div class="overview-stats">
-                        <div class="overview-card">
-                            <div class="overview-icon">📈</div>
-                            <div class="overview-content">
-                                <h3 id="total-xp-display">0</h3>
-                                <p>Total Experience</p>
+
+                <!-- Date Selection -->
+                <div class="date-section">
+                    <div class="date-picker-container">
+                        <label for="habit-date" class="date-label">Select Date:</label>
+                        <input type="date" id="habit-date" class="form-control date-input">
+                        <button id="today-btn" class="btn btn--secondary btn--sm">Today</button>
+                    </div>
+                    <div class="date-status" id="date-status">Viewing today's habits</div>
+                </div>
+
+                <!-- User Stats -->
+                <div class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Current Level</div>
+                                <div class="stat-value" id="current-level">1</div>
                             </div>
                         </div>
-                        <div class="overview-card">
-                            <div class="overview-icon">🏆</div>
-                            <div class="overview-content">
-                                <h3 id="progress-level-display">1</h3>
-                                <p>Current Level</p>
+                        <div class="stat-card">
+                            <div class="stat-icon">💎</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Total XP</div>
+                                <div class="stat-value" id="total-xp">0</div>
                             </div>
                         </div>
-                        <div class="overview-card">
-                            <div class="overview-icon">🗓️</div>
-                            <div class="overview-content">
-                                <h3 id="weekly-progress">0/7</h3>
-                                <p>This Week</p>
+                        <div class="stat-card">
+                            <div class="stat-icon">🔥</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Best Streak</div>
+                                <div class="stat-value" id="best-streak">0</div>
                             </div>
                         </div>
-                        <div class="overview-card">
-                            <div class="overview-icon">👹</div>
-                            <div class="overview-content">
-                                <h3 id="bosses-defeated">0</h3>
-                                <p>Bosses Defeated</p>
+                        <div class="stat-card">
+                            <div class="stat-icon">📅</div>
+                            <div class="stat-info">
+                                <div class="stat-label">Daily Progress</div>
+                                <div class="stat-value" id="daily-progress">0%</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="boss-battle-section">
-                    <h3>Weekly Boss Battle</h3>
-                    <div class="boss-battle-card">
-                        <div class="boss-info">
-                            <span class="boss-icon">👹</span>
-                            <div class="boss-details">
-                                <p id="boss-status">Complete 5/7 days to defeat this week!</p>
-                                <div class="boss-progress">
-                                    <div id="boss-progress-fill" class="boss-progress-bar"></div>
-                                </div>
+                <!-- XP Progress Bar -->
+                <div class="xp-section">
+                    <div class="xp-header">
+                        <span>XP Progress to Next Level</span>
+                        <span id="xp-progress-text">0 / 100</span>
+                    </div>
+                    <div class="xp-bar">
+                        <div class="xp-fill" id="xp-fill" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Emotional Habit Companions Grid -->
+                <div class="habits-section">
+                    <div class="section-header">
+                        <h3>Your Emotional Companions</h3>
+                        <p>Click on your mascots to complete habits - watch their emotions change based on your progress!</p>
+                    </div>
+                    <div class="habits-grid" id="habits-grid">
+                        <!-- Habit cards will be dynamically generated with emotional states -->
+                    </div>
+                </div>
+
+                <!-- Boss Battle Section -->
+                <div class="boss-section">
+                    <div class="boss-card" id="boss-card">
+                        <div class="boss-header">
+                            <div class="boss-info">
+                                <h4>Weekly Boss Challenge</h4>
+                                <p>Complete 5 out of 7 days to defeat the boss and keep your mascots happy!</p>
                             </div>
+                            <div class="boss-emoji">👹</div>
+                        </div>
+                        <div class="boss-progress">
+                            <div class="boss-bar">
+                                <div class="boss-fill" id="boss-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="boss-text" id="boss-text">0/5 days completed</span>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="habit-streaks">
-                    <h3>Individual Habit Streaks</h3>
-                    <div id="streaks-container" class="streaks-grid">
-                        <!-- Streaks will be populated by JavaScript -->
+        <!-- Progress View -->
+        <div id="progress-view" class="view">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Progress Analytics</h3>
+                    <p>Track your habit journey and mascot emotional patterns</p>
+                </div>
+
+                <!-- Emotional Insights -->
+                <div class="emotional-insights-section">
+                    <h4>Mascot Emotional Analysis</h4>
+                    <div class="emotional-insights-grid" id="emotional-insights-grid">
+                        <!-- Emotional insights will be populated here -->
                     </div>
                 </div>
 
+                <!-- Achievement Gallery -->
                 <div class="achievements-section">
-                    <h3>Achievements & Badges</h3>
-                    <div id="badges-container" class="badges-grid">
-                        <!-- Badges will be populated by JavaScript -->
+                    <h4>Achievements</h4>
+                    <div class="achievements-grid" id="achievements-grid">
+                        <!-- Achievement badges will be dynamically generated -->
+                    </div>
+                </div>
+
+                <!-- Habit Statistics -->
+                <div class="habits-stats-section">
+                    <h4>Habit Statistics</h4>
+                    <div class="stats-table">
+                        <div class="stats-header">
+                            <div>Mascot & Habit</div>
+                            <div>Current Streak</div>
+                            <div>Best Streak</div>
+                            <div>Completion Rate</div>
+                        </div>
+                        <div class="stats-body" id="habit-stats-body">
+                            <!-- Habit statistics will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Weekly Progress Chart -->
+                <div class="chart-section">
+                    <h4>Weekly Completion & Emotional Trends</h4>
+                    <div class="chart-container" style="position: relative; height: 300px;">
+                        <canvas id="progress-chart"></canvas>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Reflection View -->
-            <div id="reflection-view" class="view">
-                <div class="reflection-header">
-                    <h2>Weekly Reflection</h2>
-                    <p class="reflection-subtitle">Take a moment to reflect on your journey</p>
+        <!-- Enhanced Reflection View -->
+        <div id="reflection-view" class="view">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Weekly Reflection & Insights</h3>
+                    <p>Reflect on your journey and learn from your mascot companions</p>
                 </div>
 
-                <div class="reflection-content">
+                <!-- Current Week Reflection -->
+                <div class="reflection-section">
+                    <div class="reflection-card">
+                        <div class="reflection-header">
+                            <h4>This Week's Insights</h4>
+                            <div class="reflection-date" id="reflection-date"></div>
+                        </div>
+                        <div class="reflection-content">
+                            <div class="insight-item">
+                                <div class="insight-label">Most Consistent Habit</div>
+                                <div class="insight-value" id="most-consistent">Loading...</div>
+                            </div>
+                            <div class="insight-item">
+                                <div class="insight-label">Needs Attention</div>
+                                <div class="insight-value" id="needs-attention">Loading...</div>
+                            </div>
+                            <div class="insight-item">
+                                <div class="insight-label">Best Day</div>
+                                <div class="insight-value" id="best-day">Loading...</div>
+                            </div>
+                            <div class="insight-item">
+                                <div class="insight-label">Mascot Mood Summary</div>
+                                <div class="insight-value" id="mascot-mood">Loading...</div>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="reflection-questions">
-                        <h3>Reflection Questions</h3>
-                        <div id="reflection-form" class="questions-container">
-                            <!-- Questions will be populated by JavaScript -->
+                        <h4>Weekly Reflection Questions</h4>
+                        <div class="question-container" id="question-container">
+                            <!-- Questions will be dynamically populated -->
                         </div>
-                        <button id="save-reflection" class="btn btn--primary">Save Reflection</button>
+                        <button class="btn btn--primary" id="save-reflection">Save Reflection</button>
+                    </div>
+                </div>
+
+                <!-- Historical Reflections Section -->
+                <div class="historical-reflections-section">
+                    <div class="section-header">
+                        <h4>Previous Reflections</h4>
+                        <p>Review your past reflection sessions and track your growth journey</p>
+                    </div>
+                    
+                    <div class="reflection-filters">
+                        <input type="text" id="reflection-search" class="form-control" placeholder="Search reflections...">
+                        <select id="reflection-sort" class="form-control">
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                        </select>
                     </div>
 
-                    <div class="reflection-insights">
-                        <h3>This Week's Insights</h3>
-                        <div class="insights-grid">
-                            <div class="insight-card">
-                                <h4>Most Consistent</h4>
-                                <div id="most-consistent-habit" class="insight-value">-</div>
-                            </div>
-                            <div class="insight-card">
-                                <h4>Needs Attention</h4>
-                                <div id="needs-attention-habit" class="insight-value">-</div>
-                            </div>
-                            <div class="insight-card">
-                                <h4>Best Day</h4>
-                                <div id="best-day" class="insight-value">-</div>
-                            </div>
-                        </div>
+                    <div class="historical-reflections-list" id="historical-reflections-list">
+                        <!-- Past reflections will be populated here -->
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Settings View -->
-            <div id="settings-view" class="view">
-                <div class="settings-header">
-                    <h2>Settings & Customization</h2>
+        <!-- Support View -->
+        <div id="support-view" class="view">
+            <div class="container">
+                <div class="section-header">
+                    <h3>Support & Feedback</h3>
+                    <p>Help us make HabitPals even more intelligent and engaging!</p>
                 </div>
 
-                <div class="settings-sections">
-                    <div class="settings-section">
-                        <h3>🎭 Mascot Customization</h3>
-                        <p>Customize your habit mascots and their names</p>
-                        <div id="mascot-customization" class="mascot-customization">
-                            <!-- Mascot customization will be populated by JavaScript -->
+                <div class="support-sections">
+                    <!-- Donation Section -->
+                    <div class="support-section">
+                        <h4>☕ Support HabitPals Development</h4>
+                        <p>Love your emotional mascot companions? Support continued development of new features for HabitPals!</p>
+                        <div class="donation-buttons">
+                            <button class="btn btn--primary donation-btn" data-amount="3">$3</button>
+                            <button class="btn btn--primary donation-btn" data-amount="5">$5</button>
+                            <button class="btn btn--primary donation-btn" data-amount="10">$10</button>
+                            <button class="btn btn--primary donation-btn" data-amount="25">$25</button>
                         </div>
+                        <p class="donation-note">Click any amount to support HabitPals development (demo mode)</p>
                     </div>
 
-                    <div class="settings-section">
-                        <h3>💾 Data Management</h3>
-                        <div class="data-actions">
-                            <div class="action-group">
-                                <h4>Export Data</h4>
-                                <p>Download your habit data</p>
-                                <div class="action-buttons">
-                                    <button id="export-json" class="btn btn--outline">Export JSON</button>
-                                    <button id="export-csv" class="btn btn--outline">Export CSV</button>
-                                </div>
-                            </div>
-                            <div class="action-group">
-                                <h4>Import Data</h4>
-                                <p>Import previously exported data</p>
-                                <input type="file" id="import-file" accept=".json,.csv" class="hidden">
-                                <button id="import-data" class="btn btn--outline">Import Data</button>
-                            </div>
-                            <div class="action-group">
-                                <h4>Backup & Sync</h4>
-                                <p id="sync-status">Last synced: Never</p>
-                                <button id="force-sync" class="btn btn--outline">Sync Now</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="settings-section">
-                        <h3>⚙️ Preferences</h3>
-                        <div class="preferences">
-                            <div class="preference-item">
-                                <label class="form-label">
-                                    <input type="checkbox" id="notifications-enabled"> 
-                                    Enable motivational notifications
-                                </label>
-                            </div>
-                            <div class="preference-item">
-                                <label class="form-label">
-                                    <input type="checkbox" id="sound-effects"> 
-                                    Play sound effects
-                                </label>
-                            </div>
-                            <div class="preference-item">
-                                <label class="form-label">Theme</label>
-                                <select id="theme-selector" class="form-control">
-                                    <option value="auto">Auto (System)</option>
-                                    <option value="light">Light</option>
-                                    <option value="dark">Dark</option>
+                    <!-- Feedback Section -->
+                    <div class="support-section">
+                        <h4>📝 Send Feedback</h4>
+                        <div class="feedback-form">
+                            <div class="form-group">
+                                <label class="form-label">Category</label>
+                                <select id="feedback-category" class="form-control">
+                                    <option value="mascot">Mascot Emotions & Behavior</option>
+                                    <option value="sounds">Sound Customization</option>
+                                    <option value="google-sync">Google Sync & Integration</option>
+                                    <option value="bug">Bug Report</option>
+                                    <option value="feature">Feature Request</option>
+                                    <option value="general">General Feedback</option>
                                 </select>
                             </div>
+                            <div class="form-group">
+                                <label class="form-label">Your Message</label>
+                                <textarea id="feedback-message" class="form-control" rows="4" 
+                                    placeholder="Tell us about your experience with HabitPals, the mascot emotions, sound features, or suggest improvements..."></textarea>
+                            </div>
+                            <button class="btn btn--primary" id="send-feedback">Send Feedback</button>
                         </div>
                     </div>
 
+                    <!-- Enhanced FAQ Section -->
+                    <div class="support-section">
+                        <h4>❓ HabitPals FAQ</h4>
+                        <div class="faq-list" id="faq-list">
+                            <!-- FAQ items will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Contact Section -->
+                    <div class="support-section">
+                        <h4>📧 Contact</h4>
+                        <div class="contact-info">
+                            <p>Need help with your emotional mascot companions?</p>
+                            <p><strong>Email:</strong> support@habitpals.app</p>
+                            <p><strong>Version:</strong> 3.0 HabitPals Enhanced</p>
+                            <p><strong>Features:</strong> Google Sync, Dynamic Emotions, Custom Sounds, Upload Mascots</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Settings View with Unified Customization -->
+        <div id="settings-view" class="view">
+            <div class="container">
+                <div class="section-header">
+                    <h3>HabitPals Settings & Customization Hub</h3>
+                    <p>Manage your habits, customize your mascots, and personalize your HabitPals experience</p>
+                </div>
+
+                <div class="settings-tabs">
+                    <button class="settings-tab active" data-tab="habits-mascots">🦉 Habits & Mascots</button>
+                    <button class="settings-tab" data-tab="sounds">🔊 Sound Settings</button>
+                    <button class="settings-tab" data-tab="sync">☁️ Google Sync</button>
+                    <button class="settings-tab" data-tab="preferences">⚙️ Preferences</button>
+                    <button class="settings-tab" data-tab="data">📊 Data Management</button>
+                </div>
+
+                <!-- Unified Habits & Mascots Tab -->
+                <div id="habits-mascots-tab" class="settings-tab-content active">
+                    <!-- Add New Habit Section -->
                     <div class="settings-section">
-                        <h3>ℹ️ About</h3>
-                        <div class="about-content">
-                            <p><strong>REDS PLMT Tracker v2.0</strong></p>
-                            <p>Enhanced gamified habit tracker with cloud sync and personalized mascots.</p>
-                            <p>Track your habits: Read, Exercise, Deep Work, Sleep, Plan, Learn, Mindfulness, Track finances</p>
-                            <div class="danger-zone">
-                                <h4>Danger Zone</h4>
-                                <button id="reset-data" class="btn btn--error">Reset All Data</button>
+                        <h4>🆕 Add New Habit</h4>
+                        <div class="add-habit-form">
+                            <div class="form-group">
+                                <label class="form-label">Habit Name</label>
+                                <input type="text" id="new-habit-name" class="form-control" placeholder="e.g., Morning Yoga">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Description</label>
+                                <textarea id="new-habit-desc" class="form-control" rows="2" placeholder="Brief description of your habit"></textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">XP Reward</label>
+                                    <input type="number" id="new-habit-xp" class="form-control" value="20" min="5" max="100">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Category</label>
+                                    <select id="new-habit-category" class="form-control">
+                                        <option value="health">Health</option>
+                                        <option value="learning">Learning</option>
+                                        <option value="productivity">Productivity</option>
+                                        <option value="wellness">Wellness</option>
+                                        <option value="creative">Creative</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button class="btn btn--primary" id="add-habit-btn">Add Habit</button>
+                        </div>
+                    </div>
+
+                    <!-- Manage Existing Habits -->
+                    <div class="settings-section">
+                        <h4>📝 Manage Habits</h4>
+                        <div class="habits-management" id="habits-management">
+                            <!-- Habit management items will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Mascot Customization -->
+                    <div class="settings-section">
+                        <h4>🎨 Mascot Customization</h4>
+                        <div class="mascot-settings" id="mascot-settings">
+                            <!-- Mascot customization options will be generated -->
+                        </div>
+                    </div>
+
+                    <!-- Custom Mascot Upload -->
+                    <div class="settings-section">
+                        <h4>🎭 Upload Custom Mascots</h4>
+                        <div class="custom-mascot-upload">
+                            <div class="form-group">
+                                <label class="form-label">Mascot Name</label>
+                                <input type="text" id="custom-mascot-name" class="form-control" placeholder="e.g., My Dragon">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Happy State (Required)</label>
+                                <div class="emoji-input-group">
+                                    <input type="text" id="custom-happy" class="form-control" placeholder="🎉🐉">
+                                    <input type="file" id="custom-happy-file" accept="image/*" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Neutral/Pending State (Required)</label>
+                                <div class="emoji-input-group">
+                                    <input type="text" id="custom-neutral" class="form-control" placeholder="🐉">
+                                    <input type="file" id="custom-neutral-file" accept="image/*" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Sad/Missed State (Required)</label>
+                                <div class="emoji-input-group">
+                                    <input type="text" id="custom-sad" class="form-control" placeholder="😢🐉">
+                                    <input type="file" id="custom-sad-file" accept="image/*" class="form-control">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Excited/Streak State (Optional)</label>
+                                <div class="emoji-input-group">
+                                    <input type="text" id="custom-excited" class="form-control" placeholder="⚡🐉">
+                                    <input type="file" id="custom-excited-file" accept="image/*" class="form-control">
+                                </div>
+                            </div>
+                            <div class="custom-mascot-preview" id="custom-mascot-preview">
+                                <h5>Preview:</h5>
+                                <div class="preview-emotions" id="preview-emotions">
+                                    <!-- Preview will show here -->
+                                </div>
+                            </div>
+                            <button class="btn btn--primary" id="upload-custom-mascot">Create Custom Mascot</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sound Settings Tab -->
+                <div id="sounds-tab" class="settings-tab-content">
+                    <!-- Global Sound Settings -->
+                    <div class="settings-section">
+                        <h4>🔊 Global Sound Settings</h4>
+                        <div class="preferences-grid">
+                            <div class="preference-item">
+                                <label class="preference-label">
+                                    <input type="checkbox" id="sounds-enabled" checked>
+                                    <span>Enable Mascot Sounds</span>
+                                </label>
+                            </div>
+                            <div class="preference-item">
+                                <label class="preference-label">
+                                    <span>Master Volume</span>
+                                    <input type="range" id="sound-volume" min="0" max="1" step="0.1" value="0.7">
+                                </label>
+                                <span class="volume-value" id="volume-value">70%</span>
+                            </div>
+                            <div class="preference-item">
+                                <button class="btn btn--secondary" id="test-sound">Test Master Sound</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Individual Mascot Sound Customization -->
+                    <div class="settings-section">
+                        <h4>🎵 Individual Mascot Sounds</h4>
+                        <p>Customize the sound each mascot makes when completing habits</p>
+                        <div class="mascot-sounds" id="mascot-sounds">
+                            <!-- Individual mascot sound settings will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Upload Custom Sounds -->
+                    <div class="settings-section">
+                        <h4>🎧 Upload Custom Sounds</h4>
+                        <div class="custom-sound-upload">
+                            <div class="form-group">
+                                <label class="form-label">Sound Name</label>
+                                <input type="text" id="custom-sound-name" class="form-control" placeholder="e.g., My Dragon Roar">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Upload Sound File</label>
+                                <input type="file" id="custom-sound-file" accept="audio/*" class="form-control">
+                            </div>
+                            <button class="btn btn--primary" id="upload-custom-sound">Upload Sound</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google Sync Tab -->
+                <div id="sync-tab" class="settings-tab-content">
+                    <div class="settings-section">
+                        <h4>☁️ Google Drive Sync</h4>
+                        <div id="google-sync-status" class="sync-status">
+                            <!-- Sync status will be populated here -->
+                        </div>
+                        <div class="sync-actions">
+                            <button class="btn btn--primary" id="sync-to-google">📤 Backup to Google Drive</button>
+                            <button class="btn btn--secondary" id="sync-from-google">📥 Restore from Google Drive</button>
+                            <button class="btn btn--outline" id="enable-auto-sync">⚡ Enable Auto-Sync</button>
+                        </div>
+                        <div class="sync-info">
+                            <p><strong>Sync Features:</strong></p>
+                            <ul>
+                                <li>✅ Habit progress and streaks</li>
+                                <li>✅ Custom mascots and sounds</li>
+                                <li>✅ Weekly reflections</li>
+                                <li>✅ Achievement progress</li>
+                                <li>✅ Settings and preferences</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences Tab -->
+                <div id="preferences-tab" class="settings-tab-content">
+                    <!-- Notifications -->
+                    <div class="settings-section">
+                        <h4>📱 Notifications</h4>
+                        <div class="preferences-grid">
+                            <div class="preference-item">
+                                <label class="preference-label">
+                                    <input type="checkbox" id="notifications-enabled" checked>
+                                    <span>Enable Notifications</span>
+                                </label>
+                            </div>
+                            <div class="preference-item">
+                                <label class="preference-label">
+                                    <span>Reminder Times</span>
+                                </label>
+                                <div class="time-inputs">
+                                    <input type="time" id="reminder-time-1" class="form-control" value="09:00">
+                                    <input type="time" id="reminder-time-2" class="form-control" value="15:00">
+                                    <input type="time" id="reminder-time-3" class="form-control" value="20:00">
+                                </div>
+                            </div>
+                            <div class="preference-item">
+                                <button class="btn btn--secondary" id="test-notification">Test Notification</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mascot Behavior -->
+                    <div class="settings-section">
+                        <h4>🎭 Mascot Behavior</h4>
+                        <div class="preferences-grid">
+                            <div class="preference-item">
+                                <label class="preference-label">
+                                    <span>Emotional Sensitivity (How quickly emotions change)</span>
+                                    <input type="range" id="mascot-sensitivity" min="1" max="5" value="3">
+                                </label>
+                                <div class="sensitivity-labels">
+                                    <span>Stable</span>
+                                    <span>Reactive</span>
+                                </div>
+                            </div>
+                            <div class="preference-item">
+                                <label class="preference-label">
+                                    <input type="checkbox" id="mascot-animations" checked>
+                                    <span>Enable Mascot Animations</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Display Settings -->
+                    <div class="settings-section">
+                        <h4>🎨 Display Settings</h4>
+                        <div class="preferences-grid">
+                            <div class="preference-item">
+                                <label class="preference-label">
+                                    <span>Theme</span>
+                                    <select id="theme-select" class="form-control">
+                                        <option value="auto">Auto (System)</option>
+                                        <option value="light">Light</option>
+                                        <option value="dark">Dark</option>
+                                    </select>
+                                </label>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Modals -->
-        <div id="level-up-modal" class="modal">
-            <div class="modal-content celebration">
-                <div class="celebration-icon">🎉</div>
-                <h3>Level Up!</h3>
-                <p>Congratulations! You've reached level <span id="new-level"></span>!</p>
-                <button class="btn btn--primary" onclick="closeLevelUpModal()">Awesome!</button>
-            </div>
-        </div>
-
-        <div id="habit-complete-modal" class="modal">
-            <div class="modal-content">
-                <div class="mascot-celebration">
-                    <span id="celebrating-mascot"></span>
-                </div>
-                <h3 id="habit-complete-title">Great Job!</h3>
-                <p id="habit-complete-message">You've completed a habit!</p>
-                <button class="btn btn--primary" onclick="closeHabitCompleteModal()">Keep Going!</button>
-            </div>
-        </div>
-
-        <div id="mascot-selector-modal" class="modal">
-            <div class="modal-content wide">
-                <h3 id="mascot-selector-title">Choose Your Mascot</h3>
-                <div id="mascot-options" class="mascot-options">
-                    <!-- Mascot options will be populated -->
-                </div>
-                <div class="mascot-customization-form">
-                    <div class="form-group">
-                        <label class="form-label">Mascot Name</label>
-                        <input type="text" id="mascot-name-input" class="form-control" placeholder="Give your mascot a name">
+                <!-- Data Management Tab -->
+                <div id="data-tab" class="settings-tab-content">
+                    <div class="settings-section">
+                        <h4>📊 Data Management</h4>
+                        <div class="data-actions">
+                            <button class="btn btn--secondary" id="export-data">📥 Export All Data</button>
+                            <button class="btn btn--secondary" id="import-data">📤 Import Data</button>
+                            <button class="btn btn--outline" id="reset-data">🔄 Reset All Data</button>
+                        </div>
+                        <input type="file" id="import-file" accept=".json" style="display: none;">
                     </div>
-                    <div class="form-group">
-                        <label class="form-label">Color Theme</label>
-                        <div id="color-options" class="color-options">
-                            <!-- Color options will be populated -->
+
+                    <!-- About -->
+                    <div class="settings-section">
+                        <h4>ℹ️ About HabitPals</h4>
+                        <div class="about-content">
+                            <p><strong>Version:</strong> 3.0 HabitPals Enhanced</p>
+                            <p><strong>Tagline:</strong> "Your Habits, Your Companions, Your Journey"</p>
+                            <p><strong>Features:</strong> Google Sync, Dynamic emotional mascots, custom sound system, habit management</p>
+                            <p><strong>New in 3.0:</strong> Google integration, upload custom mascots, advanced sound customization, historical reflections</p>
+                            <p>Built with love for habit formation, gamification, and emotional intelligence - where every habit has a heart!</p>
                         </div>
                     </div>
-                </div>
-                <div class="modal-actions">
-                    <button class="btn btn--outline" onclick="closeMascotSelector()">Cancel</button>
-                    <button class="btn btn--primary" onclick="saveMascotSelection()">Save</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modals -->
+    <!-- Level Up Modal -->
+    <div id="levelup-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🎉 Level Up!</h3>
+            </div>
+            <div class="modal-body">
+                <div class="levelup-celebration">
+                    <div class="new-level">Level <span id="new-level">2</span></div>
+                    <p>Congratulations! Your HabitPals are celebrating with you!</p>
+                    <div class="celebration-mascots" id="celebration-mascots"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--primary" id="close-levelup">Continue Journey</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievement Modal -->
+    <div id="achievement-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🏆 Achievement Unlocked!</h3>
+            </div>
+            <div class="modal-body">
+                <div class="achievement-display">
+                    <div class="achievement-icon" id="achievement-icon">🏆</div>
+                    <div class="achievement-name" id="achievement-name">Achievement Name</div>
+                    <div class="achievement-desc" id="achievement-desc">Achievement Description</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn--primary" id="close-achievement">Awesome!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mascot Selection Modal -->
+    <div id="mascot-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Choose Mascot for <span id="habit-name-modal"></span></h3>
+                <button class="modal-close" id="close-mascot-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="mascot-selection-grid" id="mascot-selection-grid">
+                    <!-- Mascot options will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="app.js"></script>
 </body>
 </html>
