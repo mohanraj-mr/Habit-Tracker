@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>HabitPals Core Engine Tests</title></head>
+<body>
+<pre id="results">Running tests...</pre>
+<script src="habit-engine.js"></script>
+<script>
+(function () {
+  const { HabitEngine, defaultState, localDateKey, shiftDate } = window.HabitPalsCore;
+  const results = [];
+  function assert(condition, message) { if (!condition) throw new Error(message); }
+  function test(name, fn) {
+    try { fn(); results.push('✓ ' + name); }
+    catch (error) { results.push('✗ ' + name + ': ' + error.message); }
+  }
+
+  const engine = new HabitEngine(defaultState([
+    { id: 'read', name: 'Read', xp: 20, defaultMascot: 'owl' },
+    { id: 'gym', name: 'Exercise', xp: 35, defaultMascot: 'bear' }
+  ]));
+
+  test('local date keys use the browser local calendar date', () => {
+    const date = new Date(2026, 8, 14, 23, 30);
+    assert(localDateKey(date) === '2026-09-14', 'unexpected local date key');
+  });
+
+  test('habit CRUD creates, updates and archives habits', () => {
+    const habit = engine.createHabit({ name: 'Meditate', xp: 15 });
+    assert(engine.getAllHabits().some(h => h.id === habit.id), 'habit not created');
+    engine.updateHabit(habit.id, { name: 'Meditation', xp: 25 });
+    assert(engine.getAllHabits().find(h => h.id === habit.id).name === 'Meditation', 'habit not updated');
+    engine.archiveHabit(habit.id);
+    assert(!engine.getAllHabits().some(h => h.id === habit.id), 'habit not archived');
+    assert(engine.getAllHabits(true).some(h => h.id === habit.id), 'archived habit missing');
+  });
+
+  test('completion toggles are idempotent', () => {
+    engine.setCompletion('read', '2026-09-12', true);
+    assert(engine.isComplete('read', '2026-09-12'), 'completion missing');
+    engine.setCompletion('read', '2026-09-12', true);
+    assert(engine.getCompletedDates('read').length === 1, 'duplicate completion created');
+    engine.toggleCompletion('read', '2026-09-12');
+    assert(!engine.isComplete('read', '2026-09-12'), 'toggle did not clear');
+  });
+
+  test('current streak is calculated from history, not click count', () => {
+    ['2026-09-10', '2026-09-11', '2026-09-12', '2026-09-14'].forEach(date => engine.setCompletion('read', date, true));
+    assert(engine.currentStreak('read', '2026-09-14') === 1, 'streak should stop at missing 09-13');
+    engine.setCompletion('read', '2026-09-13', true);
+    assert(engine.currentStreak('read', '2026-09-14') === 5, 'streak should become five days');
+  });
+
+  test('best streak survives a broken current streak', () => {
+    engine.setCompletion('gym', '2026-09-01', true);
+    engine.setCompletion('gym', '2026-09-02', true);
+    engine.setCompletion('gym', '2026-09-03', true);
+    engine.setCompletion('gym', '2026-09-05', true);
+    assert(engine.bestStreak('gym') === 3, 'best streak should be three');
+  });
+
+  test('XP is derived from completions', () => {
+    assert(engine.state.xp === 170, 'unexpected XP total');
+    assert(engine.level() === 2, 'unexpected level');
+    assert(engine.xpIntoLevel() === 70, 'unexpected XP into level');
+  });
+
+  test('date shifting is calendar-safe', () => {
+    assert(shiftDate('2026-09-01', -1) === '2026-08-31', 'previous date incorrect');
+    assert(shiftDate('2026-09-30', 1) === '2026-10-01', 'next date incorrect');
+  });
+
+  document.getElementById('results').textContent = results.join('\n') + '\n\n' +
+    (results.every(line => line.startsWith('✓')) ? 'ALL TESTS PASSED' : 'FAILURES PRESENT');
+})();
+</script>
+</body>
+</html>
