@@ -1,3 +1,30 @@
+/* HabitPals v1.2 foundation styles — restored global UI layer */
+.welcome-screen{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 20% 10%,#eeeaff 0,#f7f8fc 38%,#f7f8fc 100%)}
+.welcome-content{width:min(680px,100%);text-align:center}
+.welcome-title{font-size:clamp(38px,8vw,62px);margin:0 0 8px;letter-spacing:-2px}
+.welcome-tagline{font-size:20px;font-weight:800;margin:0;color:var(--hp-primary)}
+.welcome-subtitle{color:var(--hp-muted);margin:8px 0 24px;line-height:1.5}
+.mascot-preview{background:#fff;border:1px solid var(--hp-border);border-radius:24px;padding:20px;box-shadow:var(--hp-shadow);margin:20px 0}
+.mascot-carousel{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.mascot-item{padding:12px 8px;border-radius:15px;background:#f8f8fc;font-weight:700;font-size:13px}
+.preview-description{color:var(--hp-muted);font-size:13px;line-height:1.5;margin:16px 0 0}
+.welcome-actions{display:grid;gap:12px;justify-items:center}
+.welcome-actions .g_id_signin{min-height:44px}
+.signin-description,.demo-note{font-size:12px;color:var(--hp-muted);margin:0}
+.divider{width:100%;display:flex;align-items:center;gap:12px;color:#9aa3ad;font-size:12px}.divider:before,.divider:after{content:"";height:1px;background:var(--hp-border);flex:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid transparent;font:inherit;font-weight:750;text-decoration:none;transition:transform .12s ease,box-shadow .12s ease,background .12s ease;touch-action:manipulation}
+.btn:active{transform:translateY(2px)}.btn--primary{background:var(--hp-primary);color:#fff;box-shadow:0 3px 0 #5149d6}.btn--secondary{background:#fff;color:var(--hp-text);border-color:var(--hp-border);box-shadow:0 3px 0 #dfe2e8}.btn--outline{background:#fff;color:var(--hp-text);border-color:var(--hp-border)}.btn--lg{min-height:50px;padding:12px 22px;border-radius:15px;font-size:16px}.btn--sm{min-height:38px;padding:7px 11px;border-radius:10px;font-size:13px}
+.main-app{min-height:100vh}.view{display:none}.view.active{display:block}
+.date-section{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:16px 0}.date-picker-container{display:flex;align-items:center;gap:8px}.date-label{font-size:13px;font-weight:700}.date-input{max-width:180px}.date-status{font-size:12px;color:var(--hp-muted)}
+.stats-section{margin:12px 0}.habits-section{margin-top:22px}.boss-section{margin:22px 0 30px}
+.section-header h3{font-size:22px}.section-header h4{font-size:17px}
+.form-label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.achievements-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.achievements-grid .achievement-card{margin:0}
+.reflection-content{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}.insight-item{padding:12px;border-radius:14px;background:#f8f9fb}.insight-label{font-size:11px;color:var(--hp-muted)}.insight-value{font-weight:800;margin-top:4px}
+.reflection-questions{margin-top:12px}.reflection-questions h4{margin-top:0}
+.support-section h4,.settings-section h4{margin-top:0}
+.theme-toggle{cursor:pointer;user-select:none}
+@media(max-width:767px){.welcome-screen{padding:18px 12px}.welcome-title{font-size:40px}.mascot-carousel{grid-template-columns:repeat(2,1fr)}.mascot-item{font-size:12px}.date-section{align-items:flex-start;flex-direction:column}.date-picker-container{width:100%}.date-input{flex:1;max-width:none}.achievements-grid,.reflection-content{grid-template-columns:1fr}.welcome-actions .g_id_signin{transform:scale(.96)}}
 /* HabitPals mobile-first visual layer */
 :root{--hp-bg:#f7f8fc;--hp-card:#fff;--hp-text:#18212f;--hp-muted:#697386;--hp-primary:#635bff;--hp-primary-soft:#eeecff;--hp-border:#e7e9f0;--hp-success:#22a06b;--hp-shadow:0 10px 30px rgba(24,33,47,.08)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--hp-bg);color:var(--hp-text);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}.container{width:min(1120px,calc(100% - 32px));margin:auto}.hidden{display:none!important}
