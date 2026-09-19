@@ -1,50 +1,54 @@
 # HabitPals — Development Status
 
-Last updated: 2026-09-14
+Last updated: 2026-09-20
 
 ## Current milestone
 
-**Beta rescue & core engine rebuild**
+**v1.2 — Duolingo-style companion experience + mobile-first UX**
 
-The existing HabitPals project is a functional UI prototype. The next goal is a reliable beta with real habit CRUD, deterministic streaks, persistent user data, and deployable production hosting.
+The core local habit loop is now implemented: habits persist locally, completions drive XP and deterministic streaks, and expressive animal companions react to progress.
 
 ## Progress
 
-| Area | Status | Target |
+| Area | Status | Notes |
 |---|---|---|
-| Existing UI / navigation | Done | Preserve and improve |
-| Local habit completion | In progress | Reliable core engine |
-| Dynamic habit CRUD | Not started | Create / edit / archive |
-| Deterministic streaks | Not started | History-based calculation |
-| XP / levels | Existing | Verify against new engine |
-| Mascot reactions | Existing | Wire to real state |
-| Achievements | Existing | Verify and harden |
-| Firebase Authentication | Partially wired | Real Google/Firebase session |
-| Firestore persistence | Not started | Per-user cloud data |
-| Progress analytics | Partially wired | Real historical data |
-| Reflections | Partially wired | Persist and retrieve |
-| Export / import | Placeholder | JSON backup / restore |
-| Mobile hardening | Existing responsive CSS | Beta QA |
-| GitHub Pages | Not configured | Production deployment |
-| `habitpals.site.je` | Not configured | Custom domain |
+| Core habit data engine | Done | Deterministic local-date completion/streak model |
+| Local habit completion | Done | Toggle completion with persistence |
+| Dynamic habit CRUD | Done | Create + archive/remove from Settings |
+| Deterministic streaks | Done | Current/best streaks derived from completion history |
+| XP / levels | Done | XP derived from completion history |
+| Mascot reactions | Done | 8 animals × neutral/happy/excited/sad states |
+| Completion feedback | Done | Animation, XP toast, confetti |
+| Achievements | Done | First step, 3-day streak, 500 XP, 7-day streak |
+| Weekly challenge | Done | 5 different active days |
+| Progress analytics | Done | Habit stats + 7-day chart |
+| Reflections | Done | Weekly note saved locally |
+| Feedback | Done | Local feedback capture |
+| Mobile UX | v1.2 | Bottom nav, thumb-friendly cards, safe areas, responsive analytics |
+| Firebase Authentication | Partial | Existing Google Identity UI remains; real Firebase session is next |
+| Firestore persistence | Not started | Next cloud milestone |
+| Export / import | Not started | Next data-safety milestone |
+| GitHub Pages | Configured | Primary hosting target |
+| habitpals.site.je | Deferred | Intentionally out of scope for v1.2 |
 
-## Planned implementation order
+## v1.2 release focus
 
-1. Rebuild the core habit data model and migration layer.
-2. Add dynamic habit CRUD and archive behavior.
-3. Replace click-based streaks with deterministic history-based streak calculations.
-4. Connect Google Sign-In to Firebase Authentication.
-5. Persist habits, completions, settings, and reflections in Firestore.
-6. Complete progress analytics and export/import.
-7. Harden mobile UX and error/offline states.
-8. Configure GitHub Pages and `habitpals.site.je`.
+1. Make the habit loop feel rewarding.
+2. Make companions feel like characters rather than emoji decorations.
+3. Make the dashboard comfortable on a phone.
+4. Remove obvious UI-only functionality gaps.
+5. Keep the architecture local-first until cloud sync is ready.
 
-## How to check progress
+## Next milestone: v1.3
 
-This file is the high-level status dashboard. `BETA_CHECKLIST.md` will track individual acceptance criteria, while `CHANGELOG.md` records shipped changes.
+- Real Firebase Authentication session.
+- Firestore persistence and cross-device recovery.
+- JSON export/import.
+- Better onboarding and first-week guidance.
+- More companion animations and streak milestones.
+- Offline/error-state hardening.
+- Full mobile device QA.
 
-The project can also be reviewed directly from the Git history: each milestone should be a small, clearly named commit.
+## Validation note
 
-## Definition of beta
-
-HabitPals is beta-ready when a new user can sign in, create habits, complete them over multiple days, see accurate streak/XP/progress data, return on another device and recover their data from Firestore, complete a reflection, export their data, and use the app comfortably on mobile.
+Repository code has been reviewed and updated before release. The live GitHub Pages fetch was unavailable during the final check because the page returned a temporary cache miss, so the deployed UI itself was not claimed as visually verified.
