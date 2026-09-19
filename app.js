@@ -263,11 +263,28 @@
     box.innerHTML=engine.getAllHabits().map(h=>`<div class="mascot-setting-row"><div>${mascotSvg(h.mascotId,'happy',56)}</div><div><strong>${esc(h.name)}</strong><select data-mascot-for="${esc(h.id)}">${animals.map(a=>`<option value="${a}" ${a===h.mascotId?'selected':''}>${animalNames[a]}</option>`).join('')}</select></div></div>`).join('');
     box.querySelectorAll('[data-mascot-for]').forEach(s=>s.addEventListener('change',()=>{engine.updateHabit(s.dataset.mascotFor,{mascotId:s.value});persist();renderAll();toast(`${animalNames[s.value]} is now your Pal!`);}));
   }
+  function weekKey(dateKey=DATE()){ const d=Core.parseDateKey(dateKey); const day=d.getDay(); d.setDate(d.getDate()-day); return Core.localDateKey(d); }
   function renderReflection(){
     const week=engine.weeklySummary(),rates=engine.getAllHabits().map(h=>({h,r:engine.completionRate(h.id,7)})).sort((a,b)=>b.r-a.r);
     if($('most-consistent'))$('most-consistent').textContent=rates[0]?.h.name||'—';if($('needs-attention'))$('needs-attention').textContent=rates.at(-1)?.h.name||'—';
     const best=[...week].sort((a,b)=>b.completed-a.completed)[0];if($('best-day'))$('best-day').textContent=best?.date||'—';
     if($('mascot-mood'))$('mascot-mood').textContent=`${Math.round(engine.dailyProgress()*100)}% of today's Pals are smiling.`;if($('reflection-date'))$('reflection-date').textContent=`Week ending ${DATE()}`;
+    const saved=engine.state.reflections?.[weekKey()];
+    if($('reflection-note'))$('reflection-note').value=saved?.note||'';
+  }
+  function saveReflection(){
+    const note=$('reflection-note')?.value.trim()||'';
+    if(!engine.state.reflections) engine.state.reflections={};
+    engine.state.reflections[weekKey()]={note,updatedAt:new Date().toISOString()};
+    persist(); toast('Reflection saved 💭');
+  }
+  function sendFeedback(){
+    const message=$('feedback-message')?.value.trim()||'';
+    if(!message){toast('Write a little feedback first.');return;}
+    const feedback=JSON.parse(localStorage.getItem('habitPalsFeedback')||'[]');
+    feedback.push({message,createdAt:new Date().toISOString()});
+    localStorage.setItem('habitPalsFeedback',JSON.stringify(feedback));
+    $('feedback-message').value=''; toast('Thanks — feedback saved locally.');
   }
   function renderAll(){renderStats();renderHabits();renderBoss();renderProgress();renderManagement();renderMascotSettings();renderReflection();}
 
@@ -282,6 +299,8 @@
     $('today-btn')?.addEventListener('click',()=>{selectedDate=DATE();renderAll();});
     $('habit-date')?.addEventListener('change',e=>{selectedDate=e.target.value||DATE();renderAll();});
     $('add-habit-btn')?.addEventListener('click',addHabit);
+    $('save-reflection')?.addEventListener('click',saveReflection);
+    $('send-feedback')?.addEventListener('click',sendFeedback);
     $('theme-toggle')?.addEventListener('click',()=>document.body.classList.toggle('dark-mode'));
     $('sign-out-btn')?.addEventListener('click',()=>{localStorage.removeItem('habitPalsUser');location.reload();});
     window.handleCredentialResponse=response=>{
