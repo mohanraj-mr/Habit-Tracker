@@ -153,14 +153,14 @@
     if(animal==='owl') faceExtra='<circle cx="34" cy="40" r="14" fill="#fff"/><circle cx="54" cy="40" r="14" fill="#fff"/><circle cx="44" cy="48" r="4" fill="#F5B700"/>';
     if(animal==='panda') faceExtra='<ellipse cx="34" cy="38" rx="8" ry="11" fill="#202124" transform="rotate(25 34 38)"/><ellipse cx="54" cy="38" rx="8" ry="11" fill="#202124" transform="rotate(-25 54 38)"/>';
     if(animal==='cat') faceExtra='<path d="M37 48 L44 53 L51 48 L44 57Z" fill="#E8A0B8"/>';
-    if(animal==='dog') faceExtra='<ellipse cx="44" cy="49" rx="15" ry="12" fill="${light}"/><ellipse cx="44" cy="47" rx="4" ry="3" fill="#202124"/>';
-    if(animal==='capybara') faceExtra='<ellipse cx="44" cy="48" rx="19" ry="15" fill="${light}"/><circle cx="38" cy="48" r="2.4" fill="#202124"/><circle cx="50" cy="48" r="2.4" fill="#202124"/>';
-    if(animal==='bear') faceExtra='<ellipse cx="44" cy="50" rx="18" ry="14" fill="${light}"/>';
+    if(animal==='dog') faceExtra='<ellipse cx="44" cy="49" rx="15" ry="12" fill="+light+"/><ellipse cx="44" cy="47" rx="4" ry="3" fill="#202124"/>';
+    if(animal==='capybara') faceExtra='<ellipse cx="44" cy="48" rx="19" ry="15" fill="+light+"/><circle cx="38" cy="48" r="2.4" fill="#202124"/><circle cx="50" cy="48" r="2.4" fill="#202124"/>';
+    if(animal==='bear') faceExtra='<ellipse cx="44" cy="50" rx="18" ry="14" fill="+light+"/>';
     const blush=(happy||excited)?'<circle cx="27" cy="50" r="4" fill="#FB7185" opacity=".35"/><circle cx="61" cy="50" r="4" fill="#FB7185" opacity=".35"/>':'';
     const sparkle=excited?'<path d="M70 13l4 8 8 1-6 6 1 8-7-4-7 4 1-8-6-6 8-1z" fill="#FFC800"/><path d="M15 24l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z" fill="#58CC02"/>':'';
     const sadTear=sad?'<circle cx="55" cy="43" r="2.5" fill="#1CB0F6"/><path d="M55 45q-2 6 0 8" fill="none" stroke="#1CB0F6" stroke-width="2"/>':'';
     return `<svg class="mascot-svg" width="${size}" height="${size}" viewBox="0 0 88 88" role="img" aria-label="${animalNames[animal]||'Mascot'} ${mood}">
-      <g class="hp-face">${ears}<circle cx="44" cy="43" r="29" fill="${main}"/><ellipse cx="44" cy="53" rx="25" ry="20" fill="${light}" opacity=".3"/>${faceExtra}${eye(35,40)}${eye(53,40)}${mouth}${blush}${sadTear}${sparkle}</g>
+      <g class="hp-face">${ears}<circle cx="44" cy="43" r="29" fill="${main}"/><ellipse cx="44" cy="53" rx="25" ry="20" fill="+light+" opacity=".3"/>${faceExtra}${eye(35,40)}${eye(53,40)}${mouth}${blush}${sadTear}${sparkle}</g>
     </svg>`;
   }
 
