@@ -59,9 +59,9 @@
   });
 
   test('XP is derived from completions', () => {
-    assert(engine.state.xp === 170, 'unexpected XP total');
-    assert(engine.level() === 2, 'unexpected level');
-    assert(engine.xpIntoLevel() === 70, 'unexpected XP into level');
+    assert(engine.state.xp === 220, 'unexpected XP total');
+    assert(engine.level() === 3, 'unexpected level');
+    assert(engine.xpIntoLevel() === 20, 'unexpected XP into level');
   });
 
   test('date shifting is calendar-safe', () => {
